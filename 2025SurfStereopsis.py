@@ -18,7 +18,6 @@ import string
 
 
 
-
 def resources_path(relative_path): #path guide for Pyinstaller
     try:
         base_path = sys._MEIPASS
@@ -28,10 +27,15 @@ def resources_path(relative_path): #path guide for Pyinstaller
 
 pg.init()
 pg.font.init()
-screen = pg.display.set_mode((1280,720))
-default_font = pg.font.Font(None, 24)
+flags = FULLSCREEN | DOUBLEBUF
+resolution = (1920,1080)
+bpp = 16
+screen = pg.display.set_mode(resolution, flags, bpp)
+font = 'arial'
+fontsize = '24'
+default_font = pg.font.SysFont(font, fontsize)
 clock = pg.time.Clock()
-timer = clock.tick(60) #Sets the rate to 1 refresh every 17ms which isn't nyquist to microsacchades but it should be able to detect rapid eye movement
+timer = clock.tick(170) #Sets the rate to 1 refresh every 5.8ms which isn't nyquist to microsacchades but it should be able to detect rapid eye movement
 
 #Camera settings
 camera = cv2.VideoCapture(0)
@@ -41,7 +45,7 @@ UserID = ''
 
 #Instruction Section
 def about():
-    about_text = "-Updated instructions \n -Configuration added, along with IDs so people's names are not required for data collection \n -Fixed eyeline guide placement \n -Testing opens the webcamera and allows for altering the threshold and presence of glasses to optimize eye detection \n -Pyschophysiological portion altered to be a tap when depth detected version \n -Electrophysiological experiment collapses and forms every 5 seconds over a 720ms interval, pulse is still being worked on \n -The testing mode is still on if you'd like to close the application during an experiment \n -Karyn (7/23/25)"
+    about_text = "-Updated screensize \n -Updated program speed and size \n -Fixed eyeline guide placement \n -Testing opens the webcamera and allows for altering the threshold and presence of glasses to optimize eye detection \n -Pyschophysiological portion altered to be a tap when depth detected version \n -Electrophysiological experiment collapses and forms every 5 seconds over a 720ms interval, pulse is still being worked on \n -The testing mode is still on if you'd like to close the application during an experiment \n -Karyn (7/23/25)"
     back_button = bt.Button(image=None, pos=(1250,700), text_input="Back", font=default_font,
                             base_color='blue', hovering_color='green')
     while True:
@@ -94,7 +98,7 @@ def instruct():
         bt.paragraph_blit(screen,ins_text4,(30,570),default_font,250,150)
         
         #instruction set up
-        center_im = pg.image.load("Photos/Instructions.png")
+        center_im = pg.image.load(resource_path("Photos/Instructions.png")).convert()
         center_im = pg.transform.scale(center_im,(int(size[0]/2),int(size[0]/2)))
         screen.blit(center_im,(400,40))
           
@@ -122,7 +126,7 @@ def practice():
     guide_rect2 = pg.Rect(906,87,15,15)
     try:
         #generates rds based on the sphere mask
-        rds_on, rds_off = RDS.individuals_RDS("Photos/sphere_mask.png",1)
+        rds_on, rds_off = RDS.individuals_RDS(resources_path("Photos/sphere_mask.png"),1).convert()
         rds_on, rds_off = RDS.gray(rds_on), RDS.gray(rds_off)
         rds_on, rds_off = pg.surfarray.make_surface(rds_on), pg.surfarray.make_surface(rds_off)
     except Exception as e:
@@ -535,4 +539,5 @@ def menu():
                     break
         pg.display.update()
         
+
 menu()
