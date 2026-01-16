@@ -27,7 +27,7 @@ def resources_path(relative_path): #path guide for Pyinstaller
 
 pg.init()
 pg.font.init()
-flags = FULLSCREEN | DOUBLEBUF
+flags = pg.FULLSCREEN | pg.DOUBLEBUF
 resolution = (1920,1080)
 bpp = 16
 screen = pg.display.set_mode(resolution, flags, bpp)
@@ -98,7 +98,7 @@ def instruct():
         bt.paragraph_blit(screen,ins_text4,(30,570),default_font,250,150)
         
         #instruction set up
-        center_im = pg.image.load(resource_path("Photos/Instructions.png")).convert()
+        center_im = pg.image.load(resources_path("Photos/Instructions.png")).convert()
         center_im = pg.transform.scale(center_im,(int(size[0]/2),int(size[0]/2)))
         screen.blit(center_im,(400,40))
           
