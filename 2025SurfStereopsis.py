@@ -73,12 +73,12 @@ def instruct():
     ins_text2 = "Testing is where you can test your camera to make sure it's connected, and where you can adjust your settings. Both tests will use these settings, so make sure it's consistently detecting your eye. After which you will configure the system so the movement of your eyes is correlated to specific spots on screen."
     ins_text3 = "The Psychophysiological form of experiment uses your input. As you view an RDS, you will hold the space key. Once you visualize depth, you will release the key. The next stereogram will appear once you press and hold the key again"
     ins_text4 = "The Electrophysiological experiment will require that your connected to the BIOPAC EEG first. The RDS will form and collapse at a set rhythm."
+    size = pg.display.get_window_size()
     while True:
         #screen set up
         screen.fill('gray')
         instr_mouse_pos = pg.mouse.get_pos()
         tt.draw(screen)
-        size = pg.display.get_window_size()
         
         #button set up
         back_button = bt.Button(image=None, pos=(size[0]-30,size[1]-20), text_input="Back", font=default_font,
@@ -92,14 +92,14 @@ def instruct():
         next_button.update(screen)
         
         #paragraph set up
-        bt.paragraph_blit(screen, ins_text, (30,50), default_font, 250, 150)
-        bt.paragraph_blit(screen,ins_text2,(30,170),default_font,250,150)
-        bt.paragraph_blit(screen,ins_text3,(30,390),default_font,250,150)
-        bt.paragraph_blit(screen,ins_text4,(30,570),default_font,250,150)
+        bt.paragraph_blit(screen, ins_text, (30,50), default_font, 270, 150)
+        bt.paragraph_blit(screen,ins_text2,(30,170),default_font,270,150)
+        bt.paragraph_blit(screen,ins_text3,(30,390),default_font,270,150)
+        bt.paragraph_blit(screen,ins_text4,(30,570),default_font,270,150)
         
         #instruction set up
         center_im = pg.image.load(resources_path("Photos/Instructions.png")).convert()
-        center_im = pg.transform.scale(center_im,(int(size[0]/2),int(size[0]/2)))
+        center_im = pg.transform.scale(center_im,(int(size[0]*3/4),int(size[0]*3/4)))
         screen.blit(center_im,(400,40))
           
         guide_text = "Make sure to align your eye level with the center of the screen. You can move the window around the screen to better position it with your vision. Additionally, sit approximately 24 inches from the screen." 
@@ -541,3 +541,4 @@ def menu():
         
 
 menu()
+
