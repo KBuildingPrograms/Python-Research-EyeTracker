@@ -27,13 +27,15 @@ def resources_path(relative_path): #path guide for Pyinstaller
 
 pg.init()
 pg.font.init()
-flags = pg.FULLSCREEN | pg.DOUBLEBUF
+flags = pg.FULLSCREEN 
 resolution = (1920,1080)
 bpp = 16
 screen = pg.display.set_mode(resolution, flags, bpp)
 font = 'arial'
-fontsize = '24'
+fontsize = 24
 default_font = pg.font.SysFont(font, fontsize)
+sub_fontsize = 16
+sub_font = pg.font.SysFont(font, sub_fontsize)
 clock = pg.time.Clock()
 timer = clock.tick(170) #Sets the rate to 1 refresh every 5.8ms which isn't nyquist to microsacchades but it should be able to detect rapid eye movement
 
@@ -92,18 +94,18 @@ def instruct():
         next_button.update(screen)
         
         #paragraph set up
-        bt.paragraph_blit(screen, ins_text, (30,50), default_font, 270, 150)
-        bt.paragraph_blit(screen,ins_text2,(30,170),default_font,270,150)
-        bt.paragraph_blit(screen,ins_text3,(30,390),default_font,270,150)
-        bt.paragraph_blit(screen,ins_text4,(30,570),default_font,270,150)
+        bt.paragraph_blit(screen, ins_text, (30,50), default_font,270, 150)
+        bt.paragraph_blit(screen,ins_text2,(30,250),default_font,270,150)
+        bt.paragraph_blit(screen,ins_text3,(250,50),default_font,270,150)
+        bt.paragraph_blit(screen,ins_text4,(250,250),default_font,270,150)
         
         #instruction set up
         center_im = pg.image.load(resources_path("Photos/Instructions.png")).convert()
-        center_im = pg.transform.scale(center_im,(int(size[0]*3/4),int(size[0]*3/4)))
-        screen.blit(center_im,(400,40))
+        center_im = pg.transform.scale(center_im,(int(size[0]*3/8),int(size[0]*3/8)))
+        screen.blit(center_im,(700,250))
           
         guide_text = "Make sure to align your eye level with the center of the screen. You can move the window around the screen to better position it with your vision. Additionally, sit approximately 24 inches from the screen." 
-        bt.paragraph_blit(screen,guide_text,(350,20),default_font,900,150)
+        bt.paragraph_blit(screen,guide_text,(700,20),default_font,1000,150)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
@@ -487,13 +489,14 @@ def electrophys():
 
 def menu():
     pg.display.set_caption("2025 RDS and Eyetracking")
+    size = pg.display.get_window_size()
     screen_text = bt.Text("2025 RDS and Eyetracking Experiment", (20,20), 45)
     instr_button = bt.Button(image=None, pos=(70,150), text_input="Instructions",
                           font=default_font, base_color='blue',hovering_color='green')
     test_button = bt.Button(image=None, pos=(50,180), text_input="Testing", font=default_font, base_color='blue',hovering_color='green')
     psyphy_button = bt.Button(image=None, pos=(130,240), text_input="Psychophysical Experiment", font=default_font, base_color='mediumpurple3',hovering_color='red')
     elecphy_button = bt.Button(image=None, pos=(130,270), text_input="Electrophysical Experiment", font=default_font, base_color='mediumpurple3', hovering_color='red')
-    about_button = bt.Button(image=None, pos=(1200,700), text_input="Version 1.00-About",font=default_font,base_color='blue',hovering_color='green')
+    about_button = bt.Button(image=None, pos=(size[0]-80,size[1]-20), text_input="Version 1.00-About",font=default_font,base_color='blue',hovering_color='green')
     while True:
         menu_mouse_pos = pg.mouse.get_pos()
         screen.fill('white')

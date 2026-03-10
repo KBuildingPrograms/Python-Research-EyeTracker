@@ -79,7 +79,6 @@ def paragraph_blit(surface,text,pos,font,m_width,m_height,**options): #allows fo
     color = pg.Color('black')
     words = [word.split(' ') for word in text.splitlines()]
     space = font.size(' ')[0]
-    max_width = m_width
     x,y = pos
     for line in words:
         for word in line:
@@ -88,7 +87,7 @@ def paragraph_blit(surface,text,pos,font,m_width,m_height,**options): #allows fo
             if word == '\n':
                 y += word_height
                 continue
-            if x + word_width >= max_width:
+            if x + word_width >= m_width:
                 x = pos[0]
                 y += word_height
             surface.blit(word_surface, (x,y))
