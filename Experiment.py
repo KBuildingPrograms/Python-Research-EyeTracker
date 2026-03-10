@@ -152,7 +152,7 @@ class ElectroPhys:
         self.state='Transitioning'
         active_time = self.clock - clock_call
         if (active_time % 720) == 0:
-            ElectroPhys.pulse(self)
+            #ElectroPhys.pulse(self)
             return False
         else:
             swapping_time = (self.clock - clock_call)/720 if self.active else (1-(self.clock - clock_call)/720)
