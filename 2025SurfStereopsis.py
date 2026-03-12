@@ -38,6 +38,7 @@ sub_fontsize = 16
 sub_font = pg.font.SysFont(font, sub_fontsize)
 clock = pg.time.Clock()
 timer = clock.tick(170) #Sets the rate to 1 refresh every 5.8ms which isn't nyquist to microsacchades but it should be able to detect rapid eye movement
+size = pg.display.get_window_size()
 
 #Camera settings
 camera = cv2.VideoCapture(0)
@@ -48,7 +49,7 @@ UserID = ''
 #Instruction Section
 def about():
     about_text = "-Updated screensize \n -Updated program speed and size \n -Fixed eyeline guide placement \n -Testing opens the webcamera and allows for altering the threshold and presence of glasses to optimize eye detection \n -Pyschophysiological portion altered to be a tap when depth detected version \n -Electrophysiological experiment collapses and forms every 5 seconds over a 720ms interval, pulse is still being worked on \n -The testing mode is still on if you'd like to close the application during an experiment \n -Karyn (7/23/25)"
-    back_button = bt.Button(image=None, pos=(1250,700), text_input="Back", font=default_font,
+    back_button = bt.Button(image=None, pos=(size[0]-30,size[1]-20), text_input="Back", font=default_font,
                             base_color='blue', hovering_color='green')
     while True:
         about_mouse_pos = pg.mouse.get_pos()
@@ -68,6 +69,7 @@ def about():
                     break
 
 def instruct():
+    global size
     pg.display.set_caption("Instruction")
     Top_text = "Instructions"
     tt = bt.Text(Top_text,(10,10),45)
@@ -75,7 +77,8 @@ def instruct():
     ins_text2 = "Testing is where you can test your camera to make sure it's connected, and where you can adjust your settings. Both tests will use these settings, so make sure it's consistently detecting your eye. After which you will configure the system so the movement of your eyes is correlated to specific spots on screen."
     ins_text3 = "The Psychophysiological form of experiment uses your input. As you view an RDS, you will hold the space key. Once you visualize depth, you will release the key. The next stereogram will appear once you press and hold the key again"
     ins_text4 = "The Electrophysiological experiment will require that your connected to the BIOPAC EEG first. The RDS will form and collapse at a set rhythm."
-    size = pg.display.get_window_size()
+    center_im = pg.image.load(resources_path("Photos/Instructions.png")).convert()
+    center_im = pg.transform.scale(center_im,(int(size[0]*3/8),int(size[0]*3/8)))
     while True:
         #screen set up
         screen.fill('gray')
@@ -96,12 +99,10 @@ def instruct():
         #paragraph set up
         bt.paragraph_blit(screen, ins_text, (30,50), default_font,270, 150)
         bt.paragraph_blit(screen,ins_text2,(30,250),default_font,270,150)
-        bt.paragraph_blit(screen,ins_text3,(250,50),default_font,270,150)
-        bt.paragraph_blit(screen,ins_text4,(250,250),default_font,270,150)
+        bt.paragraph_blit(screen,ins_text3,(290,50),default_font,530,150) #there's an issue I need to fix where the width is actually width-position
+        bt.paragraph_blit(screen,ins_text4,(290,350),default_font,530,150) #yep, that's the problem
         
         #instruction set up
-        center_im = pg.image.load(resources_path("Photos/Instructions.png")).convert()
-        center_im = pg.transform.scale(center_im,(int(size[0]*3/8),int(size[0]*3/8)))
         screen.blit(center_im,(700,250))
           
         guide_text = "Make sure to align your eye level with the center of the screen. You can move the window around the screen to better position it with your vision. Additionally, sit approximately 24 inches from the screen." 
@@ -122,13 +123,14 @@ def instruct():
         
 def practice():
     pg.display.set_caption("RDS Test")
+    global size
     prac_text = "Below you will see an example of a random dot stereogram. To visualize it you can diverge your eyes such that you see 3 of the red squares at the top of the screen, then holding said position as you guide your eyes to the RDS."
     prac_text2 = "To do so, you can move closer to the screen such that your see 3 of the guidance squares above. When you hold your eyes in that position, you should be able to visualize the RDS. With a small bit of practice, you can automatically adjust your eyes to view it."
-    guide_rect1 = pg.Rect(374,87,15,15)
-    guide_rect2 = pg.Rect(906,87,15,15)
+    guide_rect1 = pg.Rect(480,120,15,15)
+    guide_rect2 = pg.Rect(1360,120,15,15) #still need to fix these
     try:
         #generates rds based on the sphere mask
-        rds_on, rds_off = RDS.individuals_RDS(resources_path("Photos/sphere_mask.png"),1).convert()
+        rds_on, rds_off = RDS.individuals_RDS("Photos/sphere_mask.png",2)
         rds_on, rds_off = RDS.gray(rds_on), RDS.gray(rds_off)
         rds_on, rds_off = pg.surfarray.make_surface(rds_on), pg.surfarray.make_surface(rds_off)
     except Exception as e:
@@ -149,8 +151,8 @@ def practice():
         try:
             pg.draw.rect(screen,'red',guide_rect1)
             pg.draw.rect(screen,'red',guide_rect2)
-            screen.blit(rds_off,(118,104))
-            screen.blit(rds_on,(650,104))
+            screen.blit(rds_off,(int(size[0]/4)-216,180))
+            screen.blit(rds_on,(int(3*size[0]/4)-296,180))
         except Exception as e:
             print(e)
         
@@ -248,10 +250,10 @@ def test():
             try:
                 visual.render()
                 total += visual.detection_freq()
+                tick += 1
+                visual.draw(screen)
             except:
                 pass
-            tick += 1
-            visual.draw(screen)
             if tick >= 99:
                 percentage = int(total/tick)*100
                 tick = 0
@@ -496,7 +498,7 @@ def menu():
     test_button = bt.Button(image=None, pos=(50,180), text_input="Testing", font=default_font, base_color='blue',hovering_color='green')
     psyphy_button = bt.Button(image=None, pos=(130,240), text_input="Psychophysical Experiment", font=default_font, base_color='mediumpurple3',hovering_color='red')
     elecphy_button = bt.Button(image=None, pos=(130,270), text_input="Electrophysical Experiment", font=default_font, base_color='mediumpurple3', hovering_color='red')
-    about_button = bt.Button(image=None, pos=(size[0]-80,size[1]-20), text_input="Version 1.00-About",font=default_font,base_color='blue',hovering_color='green')
+    about_button = bt.Button(image=None, pos=(size[0]-90,size[1]-20), text_input="Version 1.50-About",font=default_font,base_color='blue',hovering_color='green')
     while True:
         menu_mouse_pos = pg.mouse.get_pos()
         screen.fill('white')

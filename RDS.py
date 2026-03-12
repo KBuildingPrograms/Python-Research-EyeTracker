@@ -9,14 +9,22 @@ Created on Thu Jun 26 10:36:20 2025
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
+import sys
+import os
 
+def resources_path(relative_path): #path guide for Pyinstaller
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path,relative_path)
 
 masks = ["Photos/cylinder_mask.png","Photos/sphere_mask.png","Photos/cube_mask.png","Photos/cone_mask.png"]
 
 def random_dot(mask_name, pattern_reps=1, invert=False):
     invert_factor = -1 if invert else 1
     
-    depth_mask = Image.open(mask_name).convert("RGB")
+    depth_mask = Image.open(resources_path(mask_name)).convert("RGB")
     depth_mask_data = depth_mask.load()
     depth_mask.save("rgb.png")
     
@@ -55,7 +63,7 @@ def random_dot(mask_name, pattern_reps=1, invert=False):
 def individuals_RDS(mask_name,in_shift,pattern_reps=1, invert=False):
     invert_factor = -1 if invert else 1
     
-    depth_mask = Image.open(mask_name).convert("RGB")
+    depth_mask = Image.open(resources_path(mask_name)).convert("RGB")
     depth_mask_data = depth_mask.load()
     depth_mask.save("rgb.png")
     

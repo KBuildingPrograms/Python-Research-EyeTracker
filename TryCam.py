@@ -9,6 +9,15 @@ import pygame as pg
 from pygame.locals import *
 import cv2 
 import numpy as np
+import os
+import sys
+
+def resources_path(relative_path): #path guide for Pyinstaller
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path,relative_path)
 
 class MainCamera:
     def __init__(self,pos,camera,threshold,glasses):
@@ -16,9 +25,9 @@ class MainCamera:
         self.camera = camera
         self.threshold = threshold
         self.glasses = glasses
-        self.face_cascade = cv2.CascadeClassifier('Haarcascade/haarcascade_frontalface_default.xml')
-        self.eye_cascade = cv2.CascadeClassifier('Haarcascade/haarcascade_eye.xml')
-        self.glasses_cascade = cv2.CascadeClassifier('Haarcascade/haarcascade_eye_tree_eyeglasses.xml')
+        self.face_cascade = cv2.CascadeClassifier(resources_path('Haarcascade/haarcascade_frontalface_default.xml'))
+        self.eye_cascade = cv2.CascadeClassifier(resources_path('Haarcascade/haarcascade_eye.xml'))
+        self.glasses_cascade = cv2.CascadeClassifier(resources_path('Haarcascade/haarcascade_eye_tree_eyeglasses.xml'))
         
         
         self.detector_params = cv2.SimpleBlobDetector.Params()
