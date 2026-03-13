@@ -39,6 +39,7 @@ class MainCamera:
         self.face_pos = []
         self.r_eye_pos = []
         self.l_eye_pos = []
+        self.cameraview = np.empty((1,1))
         
         
     def nothing(x):
@@ -89,6 +90,7 @@ class MainCamera:
         img = cv2.erode(img, None, iterations=3)
         img = cv2.dilate(img,None,iterations=2)
         img = cv2.medianBlur(img, 5)
+        self.cameraview = img
         self.keypoints = detector.detect(img)
         return self.keypoints
     def render(self):
@@ -96,10 +98,12 @@ class MainCamera:
             self.ret, self.frame = self.camera.read()
             face_frame = MainCamera.detect_faces(self,self.frame)
             if face_frame is not None:
-                eyes = MainCamera.detect_eyes(face_frame,self.glasses_cascade if self.glasses else self.eye_cascade)
+                self.cameraview = face_frame
+                eyes = MainCamera.detect_eyes(self,face_frame,self.glasses_cascade if self.glasses else self.eye_cascade)
                 for eye in eyes:
                     if eye is not None:
                         eye = MainCamera.cut_eyebrows(eye)
+                        self.cameraview = eye
                         self.keypoints = MainCamera.blob_process(self,eye,self.detector,self.threshold)
                         eye = cv2.drawKeypoints(eye,self.keypoints,self.frame,(255,0,0),flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
@@ -107,6 +111,11 @@ class MainCamera:
         self.frame = pg.surfarray.make_surface(self.frame)
     def draw(self,screen):
         screen.blit(self.frame, self.pos)
+    def draw_cameraview(self,pos,screen):
+        self.cameraview = cv2.cvtColor(self.cameraview, cv2.COLOR_BGR2RGB)
+        self.cameraview = np.rot90(self.cameraview)
+        self.cameraview = pg.surfarray.make_surface(self.cameraview)
+        screen.blit(self.cameraview, pos)
     def detection_freq(self):
         pts = cv2.KeyPoint_convert(self.keypoints)
         x = 1 if len(pts)>0 else 0
@@ -117,7 +126,7 @@ class MainCamera:
             self.ret, self.frame = self.camera.read()
             face_frame = MainCamera.detect_faces(self,self.frame)
             if face_frame is not None:
-                eyes = MainCamera.detect_eyes(face_frame,self.glasses_cascade if self.glasses else self.eye_cascade)
+                eyes = MainCamera.detect_eyes(self,face_frame,self.glasses_cascade if self.glasses else self.eye_cascade)
                 for eye in eyes:
                     if eye is not None:
                         eye = MainCamera.cut_eyebrows(eye)

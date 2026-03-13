@@ -34,7 +34,7 @@ screen = pg.display.set_mode(resolution, flags, bpp)
 font = 'arial'
 fontsize = 24
 default_font = pg.font.SysFont(font, fontsize)
-sub_fontsize = 16
+sub_fontsize = 32
 sub_font = pg.font.SysFont(font, sub_fontsize)
 clock = pg.time.Clock()
 timer = clock.tick(170) #Sets the rate to 1 refresh every 5.8ms which isn't nyquist to microsacchades but it should be able to detect rapid eye movement
@@ -126,8 +126,8 @@ def practice():
     global size
     prac_text = "Below you will see an example of a random dot stereogram. To visualize it you can diverge your eyes such that you see 3 of the red squares at the top of the screen, then holding said position as you guide your eyes to the RDS."
     prac_text2 = "To do so, you can move closer to the screen such that your see 3 of the guidance squares above. When you hold your eyes in that position, you should be able to visualize the RDS. With a small bit of practice, you can automatically adjust your eyes to view it."
-    guide_rect1 = pg.Rect(480,120,15,15)
-    guide_rect2 = pg.Rect(1360,120,15,15) #still need to fix these
+    guide_rect1 = pg.Rect(432,120,15,15)
+    guide_rect2 = pg.Rect(1104,120,15,15) #Fixed...ish
     try:
         #generates rds based on the sphere mask
         rds_on, rds_off = RDS.individuals_RDS("Photos/sphere_mask.png",2)
@@ -171,24 +171,25 @@ def practice():
 def test():
     global glasses
     global threshold
+    global size
     pg.display.set_caption("Test & Practice")
     CameraOn = False
-    visual = tc.MainCamera((300,100),camera,threshold,glasses)
+    visual = tc.MainCamera((350,150),camera,threshold,glasses)
     tick = 0
     total = 0
     percentage = 0
-    close_cam = bt.Button(image=None, pos=(50,650),text_input="Close Camera", font=default_font, base_color='blue',hovering_color='green')
-    inc_thr = bt.Button(image=None, pos=(600,600),text_input='+', font=default_font, base_color='black', hovering_color='blue')
-    dec_thr = bt.Button(image=None, pos=(600,650),text_input='-',font=default_font, base_color='black',hovering_color='blue')
-    threshold_text = bt.Text(str(threshold),(600,625),fontsize=15)
-    glass_button = bt.Button(image=None, pos=(600,675), text_input='Wearing Glasses:', font=default_font, base_color='blue', hovering_color='black')
-    back_button = bt.Button(image=None, pos=(1250,700), text_input="Back", font=default_font,
+    close_cam = bt.Button(image=None, pos=(150,600),text_input="Close Camera", font=default_font, base_color='blue',hovering_color='green')
+    inc_thr = bt.Button(image=None, pos=(600,580),text_input='+', font=sub_font, base_color='black', hovering_color='blue')
+    dec_thr = bt.Button(image=None, pos=(920,580),text_input='-',font=sub_font, base_color='black',hovering_color='blue')
+    threshold_text = bt.Text(str(threshold),(760,580),fontsize=24)
+    glass_button = bt.Button(image=None, pos=(940,580), text_input='Wearing Glasses:', font=default_font, base_color='blue', hovering_color='black')
+    back_button = bt.Button(image=None, pos=(size[0]-30,size[1]-20), text_input="Back", font=default_font,
                             base_color='blue', hovering_color='green')
-    configure_button = bt.Button(image=None, pos=(1160,700),text_input = "Configure",font=default_font,base_color='blue',hovering_color='green')
+    configure_button = bt.Button(image=None, pos=(size[0]-100,size[1]-20),text_input = "Configure",font=default_font,base_color='blue',hovering_color='green')
     while True:
         test_mouse_pos = pg.mouse.get_pos()
         test_text = "Open your camera and alter the threshold till you consistently see 100% detection, and the glasses flag based on any eyewear. Sit in a space with plenty of even lighting."
-        test_cam = bt.Button(image=None, pos=(50,600),text_input="Test Camera", font=default_font,
+        test_cam = bt.Button(image=None, pos=(150,600),text_input="Test Camera", font=default_font,
                          base_color='blue', hovering_color='green')
         if not CameraOn:
             screen.fill('gray')
@@ -252,13 +253,14 @@ def test():
                 total += visual.detection_freq()
                 tick += 1
                 visual.draw(screen)
-            except:
+                visual.draw_cameraview((1200,150),screen)
+            except Exception as e:
                 pass
             if tick >= 99:
                 percentage = int(total/tick)*100
                 tick = 0
                 total = 0
-            percent_text = bt.Text(str(percentage)+"%",(650,625),fontsize=15)
+            percent_text = bt.Text(str(percentage)+"%",(650,625),fontsize=24)
             percent_text.draw(screen)
         pg.display.update()
 
