@@ -178,14 +178,14 @@ def test():
     tick = 0
     total = 0
     percentage = 0
-    close_cam = bt.Button(image=None, pos=(150,600),text_input="Close Camera", font=default_font, base_color='blue',hovering_color='green')
-    inc_thr = bt.Button(image=None, pos=(600,580),text_input='+', font=sub_font, base_color='black', hovering_color='blue')
-    dec_thr = bt.Button(image=None, pos=(920,580),text_input='-',font=sub_font, base_color='black',hovering_color='blue')
-    threshold_text = bt.Text(str(threshold),(760,580),fontsize=24)
-    glass_button = bt.Button(image=None, pos=(940,580), text_input='Wearing Glasses:', font=default_font, base_color='blue', hovering_color='black')
+    close_cam = bt.Button(image=None, pos=(150,650),text_input="Close Camera", font=default_font, base_color='blue',hovering_color='green')
+    inc_thr = bt.Button(image=None, pos=(600,650),text_input='+', font=sub_font, base_color='black', hovering_color='blue')
+    dec_thr = bt.Button(image=None, pos=(800,650),text_input='-',font=sub_font, base_color='black',hovering_color='blue')
+    threshold_text = bt.Text(str(threshold),(700,650),fontsize=24)
+    glass_button = bt.Button(image=None, pos=(940,650), text_input='Wearing Glasses:', font=default_font, base_color='blue', hovering_color='black')
     back_button = bt.Button(image=None, pos=(size[0]-30,size[1]-20), text_input="Back", font=default_font,
                             base_color='blue', hovering_color='green')
-    configure_button = bt.Button(image=None, pos=(size[0]-100,size[1]-20),text_input = "Configure",font=default_font,base_color='blue',hovering_color='green')
+    configure_button = bt.Button(image=None, pos=(size[0]-110,size[1]-20),text_input = "Configure",font=default_font,base_color='blue',hovering_color='green')
     while True:
         test_mouse_pos = pg.mouse.get_pos()
         test_text = "Open your camera and alter the threshold till you consistently see 100% detection, and the glasses flag based on any eyewear. Sit in a space with plenty of even lighting."
@@ -209,7 +209,7 @@ def test():
             glass_button.changeColor(test_mouse_pos)
             glass_button.update(screen)
             if glasses:
-                glasses_text = bt.Text('True',(690,667),fontsize=25)
+                glasses_text = bt.Text('True',(960,650),fontsize=25)
                 glasses_text.draw(screen)
         
         
@@ -255,12 +255,12 @@ def test():
                 visual.draw(screen)
                 visual.draw_cameraview((1200,150),screen)
             except Exception as e:
-                pass
+                print(e)
             if tick >= 99:
                 percentage = int(total/tick)*100
                 tick = 0
                 total = 0
-            percent_text = bt.Text(str(percentage)+"%",(650,625),fontsize=24)
+            percent_text = bt.Text(str(percentage)+"%",(300,650),fontsize=24)
             percent_text.draw(screen)
         pg.display.update()
 
@@ -291,20 +291,20 @@ def user_id_gen():
 
 def config_preamb():
     global UserID
-    size = pg.display.get_window_size()
+    global size
     config_text = "The following configuration section will require you to look at alternating green spots across the page. The configuration begins with the middle green spot and switches between it and the surrounding 4.\nOnce the configuration ends you will return to the menu to continue with the next experiment. Below you can generate an ID to be associated with the data or write an ID you've previously generated. Keep your head still during configuration and further experiments."
     ID_pretext = bt.Text("Current ID:",(30,325),20)
-    ID_pretext2 = bt.Text("Or Enter ID:",(30,350),20)
-    gen_button = bt.Button(image=None,pos=(70,300),text_input="Generate ID",font=default_font,base_color='blue',hovering_color='green')
+    ID_pretext2 = bt.Text("Or Enter ID:",(30,390),20)
+    gen_button = bt.Button(image=None,pos=(100,300),text_input="Generate ID",font=default_font,base_color='blue',hovering_color='green')
     next_button = bt.Button(image=None,pos=(size[0]-50,size[1]-30),text_input="Configure",font=default_font,base_color='blue',hovering_color='green')
     ID_m = ''
     ID_manual_bool = False
-    ID_manual_entry = bt.TextEntry(text=ID_m,pos=(110,350),font=default_font,base_color='azure4',active_color='azure',active=ID_manual_bool)
+    ID_manual_entry = bt.TextEntry(text=ID_m,pos=(120,420),font=default_font,base_color='azure4',active_color='azure',active=ID_manual_bool)
     #IDList = user_id_read()
     while True:
         ID_manual_bool = False
-        ID_manual_entry = bt.TextEntry(text=ID_m,pos=(110,350),font=default_font,base_color='azure4',active_color='azure',active=ID_manual_bool)
-        ID_text = bt.Text(UserID,(105,325),20)
+        ID_manual_entry = bt.TextEntry(text=ID_m,pos=(120,420),font=default_font,base_color='azure4',active_color='azure',active=ID_manual_bool)
+        ID_text = bt.Text(UserID,(115,410),20)
         cpreamb_mouse_pos = pg.mouse.get_pos()
         screen.fill('azure3')
         bt.paragraph_blit(screen, config_text, (30,30), default_font, 400, 200)
@@ -340,18 +340,18 @@ def config_preamb():
 
 def psyphy_preamb():
     global screen
-    size = pg.display.get_window_size()
+    global size 
+    intro_text = "Hello, welcome to the psychophysical data recollection"
+    instr_text = "Before you continue, look towards the red dots in the center of the page. This is where you will look for each Random Dot Stereogram (RDS). Hold your fingers over the space key. You will press the space key to activate the RDS, and press it again once you perceive depth. You also won't be able to close the application until the experiment is complete."
+    pt_text = bt.Text(intro_text, (20,20), 45)
+    state_text = bt.Text("Tap space to start",(593,375),15)
     while True:
         screen.fill('azure3')
-        intro_text = "Hello, welcome to the psychophysical data recollection"
-        pt_text = bt.Text(intro_text, (20,20), 45)
         pt_text.draw(screen)
-        instr_text = "Before you continue, look towards the red dots in the center of the page. This is where you will look for each Random Dot Stereogram (RDS). Hold your fingers over the space key. You will press the space key to activate the RDS, and press it again once you perceive depth. You also won't be able to close the application until the experiment is complete."
         bt.paragraph_blit(screen, instr_text, (20,100), default_font, 700, 200)
-        state_text = bt.Text("Tap space to start",(593,375),15)
         state_text.draw(screen)
-        pg.draw.circle(screen, 'red', (int(size[0]/2)+271,int(size[1]/2)), 5)
-        pg.draw.circle(screen, 'red', (int(size[0]/2)-271,int(size[1]/2)), 5)
+        pg.draw.circle(screen, 'red', (int(size[0]/4)+271,int(size[1]/2)), 5)
+        pg.draw.circle(screen, 'red', (int(3*size[0]/4)-271,int(size[1]/2)), 5)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
@@ -364,19 +364,19 @@ def psyphy_preamb():
         
 def elect_preamb():
     global screen
-    size = pg.display.get_window_size()
+    global size
     intro_text = "Hello! Welcome to the electrophysical data recollection, which is still under construction"
     et_text = bt.Text(intro_text,(20,20), 45)
     instr_text = "Before you begin, make sure you're wearing the biopac electrodes, and the biopac is reading your brain activity. This section of the demo is not fully operable yet for the eeg but should still function."
     instr_text2 = "Stare at the center of the screen where the red dots are. The RDS will form and colapse at a set interval. You won't need to manually input anything."
+    state_text = bt.Text("Tap space to start",(593,375),15)
     while True:
        screen.fill('azure2')
        et_text.draw(screen)
-       bt.paragraph_blit(screen, instr_text, (20,80), default_font, 300, 200)
-       bt.paragraph_blit(screen,instr_text2,(20,350),default_font,300,200)
+       bt.paragraph_blit(screen, instr_text, (30,80), default_font, 300, 200)
+       bt.paragraph_blit(screen,instr_text2,(30,350),default_font,300,200)
        pg.draw.circle(screen, 'red', (int(size[0]/2)+271,int(size[1]/2)), 5)
        pg.draw.circle(screen, 'red', (int(size[0]/2)-271,int(size[1]/2)), 5)
-       state_text = bt.Text("Tap space to start",(593,375),15)
        state_text.draw(screen)
        for event in pg.event.get():
            if event.type == pg.QUIT:
@@ -418,15 +418,15 @@ def configuration():
 
 def psychophys(): 
     global camera
-    size = pg.display.get_window_size()
+    global size
     pg.display.set_caption("PyschoPhysical Experiment")
     active = False
     testing = False
     eye_tracker = tc.MainCamera((0,0), camera, threshold, glasses)
     tracker = exp.PsychoPhys(UserID, clock, screen, eye_tracker, threshold, glasses)
     imgOn, posOn, imgOff, posOff = None,None,None,None
-    guide_rect1 = pg.Rect(374,87,15,15)
-    guide_rect2 = pg.Rect(906,87,15,15)
+    guide_rect1 = pg.Rect(432,120,15,15)
+    guide_rect2 = pg.Rect(1104,120,15,15)
     while True:
         screen.fill('azure3')
         pg.draw.rect(screen,'red',guide_rect1)
@@ -458,7 +458,7 @@ def electrophys():
     global camera
     current = pg.time.get_ticks()
     clock_ms = 0
-    size = pg.display.get_window_size()
+    global size
     pg.display.set_caption("ElectroPhysical Experiment")
     active = True
     testing = True
@@ -466,8 +466,8 @@ def electrophys():
     eye_tracker = tc.MainCamera((0,0), camera, threshold, glasses)
     tracker = exp.ElectroPhys(UserID, clock_ms, screen, eye_tracker, threshold, glasses, active)
     imgOn, imgOff = tracker.form_rds(0)
-    guide_rect1 = pg.Rect(374,87,15,15)
-    guide_rect2 = pg.Rect(906,87,15,15)
+    guide_rect1 = pg.Rect(432,120,15,15)
+    guide_rect2 = pg.Rect(1104,120,15,15)
     while True:
         screen.fill('azure3')
         pg.draw.rect(screen,'red',guide_rect1)

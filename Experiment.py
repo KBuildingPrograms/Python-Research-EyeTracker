@@ -10,7 +10,7 @@ import RDS
 import numpy as np
 import csv
 from datetime import date
-import GPIOpulse
+import GPIOpulse as GPIO
 
 def gray(im):
     im = 255 * (im / im.max())
@@ -91,8 +91,8 @@ class PsychoPhys:
         imgOn, imgOff = gray(imgOn), gray(imgOff)
         imgOn, imgOff = pg.surfarray.make_surface(imgOn), pg.surfarray.make_surface(imgOff)
         
-        pos_on = (int(size[0]/2)+15,int(size[1]/2)-256)
-        pos_off = (int(size[0]/2)-527,int(size[1]/2)-256)
+        pos_on = (int(3*size[0]/4)-296,180)
+        pos_off = (int(size[0]/4)-216,180)
         return imgOn, pos_on, imgOff, pos_off
     def file_record(self):
             today = date.today().strftime("%Y_%B_%d")
@@ -111,7 +111,6 @@ class ElectroPhys:
         self.glasses = glasses
         self.user_id = user_id
         self.clock = 0
-        #self.gpio = gpio
         self.active = active
         self.state = ''
         self.fields = ['user_id','active','time(ms)','Left_x_pos','Left_y_pos','Right_x_pos','Right_y_pos']
@@ -135,8 +134,8 @@ class ElectroPhys:
         imgOn, imgOff = pg.surfarray.make_surface(imgOn), pg.surfarray.make_surface(imgOff)
         return imgOn, imgOff
     def load_rds(self,screen,size,imgOn,imgOff):
-        pos_on = (int(size[0]/2)+15,int(size[1]/2)-256)
-        pos_off = (int(size[0]/2)-527,int(size[1]/2)-256)
+        pos_on = (int(3*size[0]/4)-296,180)
+        pos_off = (int(size[0]/4)-216,180)
         if self.active:
             screen.blit(imgOff,pos_off)
             screen.blit(imgOn,pos_on)
@@ -152,7 +151,7 @@ class ElectroPhys:
         self.state='Transitioning'
         active_time = self.clock - clock_call
         if (active_time % 720) == 0:
-            #ElectroPhys.pulse(self)
+            ElectroPhys.pulse(self)
             return False
         else:
             swapping_time = (self.clock - clock_call)/720 if self.active else (1-(self.clock - clock_call)/720)
@@ -162,7 +161,7 @@ class ElectroPhys:
             return True
             
     def pulse(self):
-        #GP.gpio_pulse(self.active)
+        GPIO.gpio_pulse(self.active)
         pass
     def file_record(self):
             today = date.today().strftime("%Y_%B_%d")
